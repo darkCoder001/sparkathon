@@ -1,7 +1,5 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import { ThemeSelector } from "@/components/theme-selector";
-
 interface DashboardHeaderProps {
   title: string;
 }

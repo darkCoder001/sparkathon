@@ -1,4 +1,4 @@
-import { DashboardHeader } from "@/components/dashboard-header";
+import { DashboardHeader } from "@/components/sidebar/dashboard-header";
 import { ProductsTable } from "@/components/products-table";
 
 export default function ProductsPage() {

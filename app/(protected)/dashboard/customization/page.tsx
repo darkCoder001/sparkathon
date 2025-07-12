@@ -1,4 +1,4 @@
-import { DashboardHeader } from "@/components/dashboard-header";
+import { DashboardHeader } from "@/components/sidebar/dashboard-header";
 import { CustomizationFlow } from "@/components/customization-flow";
 
 export default function CustomizationPage() {

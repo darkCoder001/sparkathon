@@ -3,7 +3,7 @@
 import { BadgeCheck, Bell, ChevronsUp, CreditCard, LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
-import { DropdownThemeToggle } from '@/components/dropdown-theme-toggle';
+import { DropdownThemeToggle } from '@/components/sidebar/dropdown-theme-toggle';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,

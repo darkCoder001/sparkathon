@@ -1,4 +1,4 @@
-import { DashboardHeader } from "@/components/dashboard-header";
+import { DashboardHeader } from "@/components/sidebar/dashboard-header";
 import { StatsCards } from "@/components/stats-cards";
 import { ChartsSection } from "@/components/charts-section";
 import { AlertsSection } from "@/components/alerts-section";
