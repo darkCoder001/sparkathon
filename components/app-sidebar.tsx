@@ -1,13 +1,14 @@
 "use client";
 
 import type * as React from "react";
-import { Home, Package, Settings, Wrench } from "lucide-react";
+import { Brain, Home, Package, Settings, Wrench } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -16,6 +17,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { NavUser } from "./nav-user";
 
 const data = {
   navMain: [
@@ -41,15 +43,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar variant="inset" {...props}>
       <SidebarHeader>
-        <div className="flex items-center gap-2 px-4 py-2">
+        <div className="flex items-center gap-2 py-2">
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-            <Settings className="size-4" />
+            <Brain className="size-4" />
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-semibold">Zephyr</span>
-            <span className="truncate text-xs">Inventory Management</span>
+            <span className="truncate text-xs">Smart Pricing Engine</span>
           </div>
         </div>
       </SidebarHeader>
@@ -71,7 +73,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarRail />
+      <SidebarFooter>
+        <NavUser />
+      </SidebarFooter>
     </Sidebar>
   );
 }

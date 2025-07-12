@@ -4,7 +4,7 @@ import { CustomizationFlow } from "@/components/customization-flow";
 export default function CustomizationPage() {
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
-      <DashboardHeader title="Price Customization Rules" />
+      <DashboardHeader title="Customization" />
       <CustomizationFlow />
     </div>
   );
