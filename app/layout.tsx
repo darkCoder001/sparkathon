@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: "A comprehensive dashboard for inventory management",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;

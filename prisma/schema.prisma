@@ -7,44 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum SUBSCRIPTION_PLAN {
-  PRO
-  FREE
-}
-
-enum INTEGRATION_TYPE {
-  INSTAGRAM
-  X
-}
-
-enum MEDIA_TYPE {
-  IMAGE
-  VIDEO
-  CAROUSEL_ALBUM
-}
-
-enum LISTENER_TYPE {
-  SMARTAI
-  MESSAGE
-}
-
 model User {
-  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id            String          @id @default(cuid())
   name          String?
   email         String          @unique
   emailVerified DateTime?
   image         String?
   password      String?
   accounts      Account[]
-  subscription  Subscription?
-  integrations  Integration[]
-  automations   Automation[]
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
 }
 
 model Account {
-  userId            String @db.Uuid
+  userId            String
   type              String
   provider          String
   providerAccountId String
@@ -55,109 +29,20 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
+ 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+ 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+ 
   @@id([provider, providerAccountId])
-  @@map("accounts")
 }
 
+model VerificationToken{
+  id               String @id @default(cuid())
+  email            String
+  token            String @unique
+  expires          DateTime
 
-model VerificationToken {
-  id      String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email   String
-  token   String   @unique
-  expires DateTime
-
-  @@unique([email, token])
-}
-
-model Subscription {
-  id         String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user       User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String?           @unique @db.Uuid
-  createdAt  DateTime          @default(now())
-  updatedAt  DateTime          @updatedAt
-  plan       SUBSCRIPTION_PLAN @default(FREE)
-  customerId String?           @unique
-}
-
-model Integration {
-  id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  type        INTEGRATION_TYPE @default(INSTAGRAM)
-  user        User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String?          @db.Uuid
-  token       String           @unique
-  expiresAt   DateTime?
-  instagramId String?          @unique
-  createdAt   DateTime         @default(now())
-}
-
-model Automation {
-  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name      String      @default("Untitled")
-  active    Boolean     @default(false)
-  user      User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String?     @db.Uuid
-  trigger   Trigger[]
-  listener  Listener?
-  posts     Post[]
-  dms       Dm[]
-  keywords  Keyword[]
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-}
-
-model Dm {
-  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  automation   Automation? @relation(fields: [automationId], references: [id])
-  automationId String?     @db.Uuid
-  senderId     String?
-  reciever     String?
-  message      String?
-  createdAt    DateTime    @default(now())
-}
-
-model Post {
-  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  externalPostId String    // original post ID from IG/X
-  caption      String?
-  media        String
-  mediaType    MEDIA_TYPE  @default(IMAGE)
-  automation   Automation? @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  automationId String?     @db.Uuid
-  createdAt    DateTime    @default(now())
-}
-
-model Listener {
-  id           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  automation   Automation    @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  automationId String        @unique @db.Uuid
-  type         LISTENER_TYPE @default(MESSAGE)
-  prompt       String
-  commentReply String?
-  dmCount      Int           @default(0)
-  commentCount Int           @default(0)
-  createdAt    DateTime      @default(now())
-}
-
-model Trigger {
-  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  type         String      
-  automation   Automation? @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  automationId String?     @db.Uuid
-  createdAt    DateTime    @default(now())
-}
-
-model Keyword {
-  id           String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  word         String
-  automation   Automation? @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  automationId String?     @db.Uuid
-
-  @@unique([automationId, word])
-  createdAt DateTime @default(now())
+  @@unique([email,token])
 }
