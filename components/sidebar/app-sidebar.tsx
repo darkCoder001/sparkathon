@@ -1,7 +1,7 @@
 "use client";
 
 import type * as React from "react";
-import { Brain, Home, Package, Settings, Wrench } from "lucide-react";
+import { Brain, Home, Package, Wrench } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
