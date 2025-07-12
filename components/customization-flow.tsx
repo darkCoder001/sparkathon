@@ -19,7 +19,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Plus, X, CloudRain, Sun, GraduationCap, Calendar } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Plus,
+  X,
+  CloudRain,
+  Sun,
+  GraduationCap,
+  Calendar,
+  Zap,
+  TrendingUp,
+  TrendingDown,
+} from "lucide-react";
 
 interface Condition {
   id: string;
@@ -28,6 +39,7 @@ interface Condition {
   effect: "increase" | "decrease";
   percentage: number;
   products: string[];
+  description: string;
   icon: React.ComponentType<{ className?: string }>;
 }
 
@@ -39,6 +51,7 @@ const defaultConditions: Condition[] = [
     effect: "increase",
     percentage: 15,
     products: ["Umbrellas", "Raincoats"],
+    description: "Rainy weather increases demand for umbrellas and raincoats",
     icon: CloudRain,
   },
   {
@@ -48,6 +61,7 @@ const defaultConditions: Condition[] = [
     effect: "increase",
     percentage: 20,
     products: ["Notebooks", "Pens", "Erasers", "Rulers"],
+    description: "Back to school season boosts stationery sales",
     icon: GraduationCap,
   },
   {
@@ -57,6 +71,7 @@ const defaultConditions: Condition[] = [
     effect: "increase",
     percentage: 10,
     products: ["Water Bottles"],
+    description: "Hot weather increases demand for hydration products",
     icon: Sun,
   },
 ];
@@ -71,6 +86,7 @@ export function CustomizationFlow() {
     effect: "increase" as const,
     percentage: 10,
     products: [] as string[],
+    description: "",
   });
 
   const availableProducts = [
@@ -91,14 +107,18 @@ export function CustomizationFlow() {
       case "season":
         return Calendar;
       case "event":
-        return GraduationCap;
+        return Zap;
       default:
         return CloudRain;
     }
   };
 
   const handleCreateCondition = () => {
-    if (newCondition.name && newCondition.products.length > 0) {
+    if (
+      newCondition.name &&
+      newCondition.products.length > 0 &&
+      newCondition.description
+    ) {
       const condition: Condition = {
         id: Date.now().toString(),
         ...newCondition,
@@ -111,6 +131,7 @@ export function CustomizationFlow() {
         effect: "increase",
         percentage: 10,
         products: [],
+        description: "",
       });
       setIsCreating(false);
     }
@@ -129,32 +150,51 @@ export function CustomizationFlow() {
     }));
   };
 
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case "weather":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
+      case "season":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
+      case "event":
+        return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200";
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
+    }
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Price Customization Rules</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-3xl font-bold tracking-tight">
+            Price Customization Rules
+          </h2>
+          <p className="text-muted-foreground mt-2">
             Create and manage dynamic pricing conditions for your products
           </p>
         </div>
-        <Button onClick={() => setIsCreating(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Condition
+        <Button onClick={() => setIsCreating(true)} size="lg" className="gap-2">
+          <Plus className="h-4 w-4" />
+          Add New Condition
         </Button>
       </div>
 
       {isCreating && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Create New Condition</CardTitle>
+        <Card className="border-2 border-dashed border-primary/20">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center gap-2">
+              <Zap className="h-5 w-5" />
+              Create New Pricing Condition
+            </CardTitle>
             <CardDescription>
-              Define a new pricing rule based on market conditions
+              Define a new pricing rule based on market conditions and external
+              factors
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
                 <Label htmlFor="condition-name">Condition Name</Label>
                 <Input
                   id="condition-name"
@@ -165,11 +205,12 @@ export function CustomizationFlow() {
                       name: e.target.value,
                     }))
                   }
-                  placeholder="e.g., Heavy Rain"
+                  placeholder="e.g., Heavy Rain, Holiday Season"
+                  className="w-full"
                 />
               </div>
-              <div>
-                <Label htmlFor="condition-type">Type</Label>
+              <div className="space-y-2">
+                <Label htmlFor="condition-type">Category</Label>
                 <Select
                   value={newCondition.type}
                   onValueChange={(value: "weather" | "season" | "event") =>
@@ -180,17 +221,33 @@ export function CustomizationFlow() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="weather">Weather</SelectItem>
-                    <SelectItem value="season">Season</SelectItem>
-                    <SelectItem value="event">Event</SelectItem>
+                    <SelectItem value="weather">🌤️ Weather</SelectItem>
+                    <SelectItem value="season">📅 Season</SelectItem>
+                    <SelectItem value="event">🎉 Event</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="effect">Effect</Label>
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={newCondition.description}
+                onChange={(e) =>
+                  setNewCondition((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
+                placeholder="Describe how this condition affects pricing..."
+                className="min-h-[80px]"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="effect">Price Effect</Label>
                 <Select
                   value={newCondition.effect}
                   onValueChange={(value: "increase" | "decrease") =>
@@ -201,13 +258,13 @@ export function CustomizationFlow() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="increase">Increase Price</SelectItem>
-                    <SelectItem value="decrease">Decrease Price</SelectItem>
+                    <SelectItem value="increase">📈 Increase Price</SelectItem>
+                    <SelectItem value="decrease">📉 Decrease Price</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <div>
-                <Label htmlFor="percentage">Percentage (%)</Label>
+              <div className="space-y-2">
+                <Label htmlFor="percentage">Percentage Change (%)</Label>
                 <Input
                   id="percentage"
                   type="number"
@@ -220,32 +277,55 @@ export function CustomizationFlow() {
                   }
                   min="1"
                   max="100"
+                  className="w-full"
                 />
               </div>
             </div>
 
-            <div>
+            <div className="space-y-3">
               <Label>Affected Products</Label>
-              <div className="grid grid-cols-2 gap-2 mt-2">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {availableProducts.map((product) => (
                   <div
                     key={product}
-                    className={`p-2 border rounded cursor-pointer transition-colors ${
+                    className={`p-3 border-2 rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md ${
                       newCondition.products.includes(product)
-                        ? "bg-primary text-primary-foreground"
-                        : "hover:bg-muted"
+                        ? "border-primary bg-primary/10 text-primary font-medium"
+                        : "border-border hover:border-primary/50"
                     }`}
                     onClick={() => toggleProduct(product)}
                   >
-                    {product}
+                    <div className="text-sm text-center">{product}</div>
                   </div>
                 ))}
               </div>
+              {newCondition.products.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {newCondition.products.map((product) => (
+                    <Badge key={product} variant="secondary" className="gap-1">
+                      {product}
+                      <X
+                        className="h-3 w-3 cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleProduct(product);
+                        }}
+                      />
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
 
-            <div className="flex gap-2">
-              <Button onClick={handleCreateCondition}>Create Condition</Button>
-              <Button variant="outline" onClick={() => setIsCreating(false)}>
+            <div className="flex gap-3 pt-4">
+              <Button onClick={handleCreateCondition} className="flex-1">
+                Create Condition
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setIsCreating(false)}
+                className="flex-1"
+              >
                 Cancel
               </Button>
             </div>
@@ -253,56 +333,95 @@ export function CustomizationFlow() {
         </Card>
       )}
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {conditions.map((condition) => (
-          <Card key={condition.id}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <div className="flex items-center gap-2">
-                <condition.icon className="h-5 w-5" />
-                <CardTitle className="text-base">{condition.name}</CardTitle>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => handleDeleteCondition(condition.id)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Effect:</span>
-                  <Badge
-                    variant={
-                      condition.effect === "increase" ? "default" : "secondary"
-                    }
-                  >
-                    {condition.effect === "increase" ? "+" : "-"}
-                    {condition.percentage}%
-                  </Badge>
-                </div>
-                <div>
-                  <span className="text-sm text-muted-foreground">
-                    Products:
-                  </span>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {condition.products.map((product) => (
-                      <Badge
-                        key={product}
-                        variant="outline"
-                        className="text-xs"
-                      >
-                        {product}
-                      </Badge>
-                    ))}
+          <Card
+            key={condition.id}
+            className="relative group hover:shadow-lg transition-shadow duration-200"
+          >
+            <CardHeader className="pb-3">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <condition.icon className="h-5 w-5 text-primary" />
                   </div>
+                  <div>
+                    <CardTitle className="text-lg">{condition.name}</CardTitle>
+                    <Badge
+                      className={`mt-1 ${getTypeColor(condition.type)}`}
+                      variant="secondary"
+                    >
+                      {condition.type}
+                    </Badge>
+                  </div>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleDeleteCondition(condition.id)}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {condition.description}
+              </p>
+
+              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                <span className="text-sm font-medium">Price Effect:</span>
+                <Badge
+                  variant={
+                    condition.effect === "increase" ? "default" : "secondary"
+                  }
+                  className="gap-1"
+                >
+                  {condition.effect === "increase" ? (
+                    <TrendingUp className="h-3 w-3" />
+                  ) : (
+                    <TrendingDown className="h-3 w-3" />
+                  )}
+                  {condition.effect === "increase" ? "+" : "-"}
+                  {condition.percentage}%
+                </Badge>
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-sm font-medium">Affected Products:</span>
+                <div className="flex flex-wrap gap-1">
+                  {condition.products.map((product) => (
+                    <Badge key={product} variant="outline" className="text-xs">
+                      {product}
+                    </Badge>
+                  ))}
                 </div>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {conditions.length === 0 && !isCreating && (
+        <Card className="text-center py-12">
+          <CardContent>
+            <div className="mx-auto w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-4">
+              <Zap className="h-12 w-12 text-muted-foreground" />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">
+              No pricing conditions yet
+            </h3>
+            <p className="text-muted-foreground mb-4">
+              Create your first dynamic pricing rule to get started
+            </p>
+            <Button onClick={() => setIsCreating(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Create First Condition
+            </Button>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

@@ -36,7 +36,7 @@ export interface Product {
   category: string;
 }
 
-const products: Product[] = [
+const initialProducts: Product[] = [
   {
     id: "1",
     name: "Umbrellas",
@@ -104,6 +104,7 @@ const products: Product[] = [
 ];
 
 export function ProductsTable() {
+  const [products, setProducts] = React.useState<Product[]>(initialProducts);
   const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(
     null
   );
@@ -112,6 +113,14 @@ export function ProductsTable() {
   const handleEditProduct = (product: Product) => {
     setSelectedProduct(product);
     setIsEditOpen(true);
+  };
+
+  const handleUpdateProduct = (updatedProduct: Product) => {
+    setProducts((prevProducts) =>
+      prevProducts.map((product) =>
+        product.id === updatedProduct.id ? updatedProduct : product
+      )
+    );
   };
 
   const getStockStatus = (stock: number) => {
@@ -202,6 +211,7 @@ export function ProductsTable() {
         product={selectedProduct}
         open={isEditOpen}
         onOpenChange={setIsEditOpen}
+        onUpdateProduct={handleUpdateProduct}
       />
     </>
   );
