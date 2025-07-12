@@ -32,6 +32,7 @@ interface EditProductSheetProps {
   product: Product | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onUpdateProduct: (product: Product) => void;
 }
 
 const conditions = [
@@ -57,6 +58,7 @@ export function EditProductSheet({
   product,
   open,
   onOpenChange,
+  onUpdateProduct,
 }: EditProductSheetProps) {
   const [adjustedPrice, setAdjustedPrice] = React.useState(0);
 
@@ -65,6 +67,17 @@ export function EditProductSheet({
       setAdjustedPrice(product.adjustedPrice);
     }
   }, [product]);
+
+  const handleSave = () => {
+    if (product) {
+      const updatedProduct = {
+        ...product,
+        adjustedPrice: adjustedPrice,
+      };
+      onUpdateProduct(updatedProduct);
+      onOpenChange(false);
+    }
+  };
 
   if (!product) return null;
 
@@ -84,15 +97,15 @@ export function EditProductSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[400px] sm:w-[540px]">
-        <SheetHeader>
+      <SheetContent className="w-[400px] sm:w-[540px] flex flex-col">
+        <SheetHeader className="flex-shrink-0">
           <SheetTitle>Edit Product: {product.name}</SheetTitle>
           <SheetDescription>
             Adjust pricing and view market conditions affecting this product.
           </SheetDescription>
         </SheetHeader>
 
-        <div className="grid gap-4 py-4">
+        <div className="flex-1 overflow-y-auto py-4 space-y-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="current-price" className="text-right">
               Current Price
@@ -191,10 +204,11 @@ export function EditProductSheet({
           )}
         </div>
 
-        <SheetFooter>
-          <Button type="submit" onClick={() => onOpenChange(false)}>
-            Save Changes
+        <SheetFooter className="flex-shrink-0 gap-2">
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
           </Button>
+          <Button onClick={handleSave}>Save Changes</Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>
