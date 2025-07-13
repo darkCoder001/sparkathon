@@ -14,14 +14,14 @@ export function DropdownThemeToggle() {
 
   return (
     <DropdownMenuItem
-      className="flex cursor-pointer items-center justify-between hover:bg-muted focus:bg-muted"
+      className="flex cursor-pointer items-center justify-between"
       onClick={handleToggleTheme}
     >
       <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
       {isDark ? (
-        <SunIcon className="h-4 w-4" />
+        <SunIcon className="h-4 w-4 hover:text-primary" />
       ) : (
-        <MoonIcon className="h-4 w-4" />
+        <MoonIcon className="h-4 w-4 hover:text-primary" />
       )}
     </DropdownMenuItem>
   );

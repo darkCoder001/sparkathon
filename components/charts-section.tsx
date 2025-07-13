@@ -70,7 +70,7 @@ export function ChartsSection() {
                 <XAxis dataKey="name" />
                 <YAxis />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="sales" fill="hsl(221 83% 53%)" />
+                <Bar dataKey="sales" fill="hsl(227.3684 79.1667% 37.6471%)" />
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
@@ -97,7 +97,7 @@ export function ChartsSection() {
                 <XAxis dataKey="name" />
                 <YAxis />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="sales" fill="hsl(32 95% 44%)" />
+                <Bar dataKey="sales" fill="hsl(46.1538 74.0933% 62.1569%)" />
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
@@ -127,8 +127,8 @@ export function ChartsSection() {
                 <Area
                   type="monotone"
                   dataKey="revenue"
-                  stroke="hsl(142 76% 36%)"
-                  fill="hsl(142 76% 36%)"
+                  stroke="hsl(227.3684 79.1667% 37.6471%)"
+                  fill="hsl(227.3684 79.1667% 37.6471%)"
                   fillOpacity={0.2}
                 />
               </AreaChart>
